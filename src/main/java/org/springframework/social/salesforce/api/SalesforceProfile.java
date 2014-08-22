@@ -1,8 +1,8 @@
 package org.springframework.social.salesforce.api;
 
-import java.io.Serializable;
-
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+import java.io.Serializable;
 
 /**
  * @author Umut Utkan
@@ -57,4 +57,23 @@ public class SalesforceProfile implements Serializable {
         return this.id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
+    }
 }

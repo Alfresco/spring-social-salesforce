@@ -2,6 +2,7 @@ package org.springframework.social.salesforce.api;
 
 import org.codehaus.jackson.JsonNode;
 import org.springframework.social.ApiBinding;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -14,6 +15,8 @@ public interface Salesforce extends ApiBinding {
 
     public ApiOperations apiOperations();
 
+    public ApexRestOperations apexRestOperations();
+
     public ChatterOperations chatterOperations();
 
     public QueryOperations queryOperations();
@@ -21,6 +24,8 @@ public interface Salesforce extends ApiBinding {
     public RecentOperations recentOperations();
 
     public SearchOperations searchOperations();
+
+    public InvoiceItOperations invoiceItOperations();
 
     public SObjectOperations sObjectsOperations();
 
@@ -31,5 +36,7 @@ public interface Salesforce extends ApiBinding {
     public String getBaseUrl();
 
     public String getInstanceUrl();
+
+    public RestTemplate getRestTemplate();
 
 }

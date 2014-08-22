@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Default implementation of Salesforce. This is the main entry point for all
  * the operations that can be performed on Salesforce.
- * 
+ *
  * @author Umut Utkan
  */
 public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Salesforce {
@@ -34,6 +34,8 @@ public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Sale
 
     private ApiOperations apiOperations;
 
+    private ApexRestOperations apexRestOperations;
+
     private ChatterOperations chatterOperations;
 
     private QueryOperations queryOperations;
@@ -41,6 +43,8 @@ public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Sale
     private RecentOperations recentOperations;
 
     private SearchOperations searchOperations;
+
+    private InvoiceItOperations invoiceItOperations;
 
     private SObjectOperations sObjectsOperations;
 
@@ -65,6 +69,11 @@ public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Sale
     }
 
     @Override
+    public ApexRestOperations apexRestOperations() {
+        return apexRestOperations;
+    }
+
+    @Override
     public ChatterOperations chatterOperations() {
         return chatterOperations;
     }
@@ -85,17 +94,24 @@ public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Sale
     }
 
     @Override
+    public InvoiceItOperations invoiceItOperations() {
+        return invoiceItOperations;
+    }
+
+    @Override
     public SObjectOperations sObjectsOperations() {
         return sObjectsOperations;
     }
 
     private void initialize() {
         apiOperations = new ApiTemplate(this, getRestTemplate());
+        apexRestOperations = new ApexRestTemplate(this, getRestTemplate());
         chatterOperations = new ChatterTemplate(this, getRestTemplate());
         queryOperations = new QueryTemplate(this, getRestTemplate());
         recentOperations = new RecentTemplate(this, getRestTemplate());
         searchOperations = new SearchTemplate(this, getRestTemplate());
         sObjectsOperations = new SObjectsTemplate(this, getRestTemplate());
+        invoiceItOperations = new InvoiceItOrderTemplate(this, getRestTemplate());
     }
 
     //@Override

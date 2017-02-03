@@ -1,6 +1,6 @@
 package org.springframework.social.salesforce.api.impl;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -106,6 +106,13 @@ public class SObjectsTemplate extends AbstractSalesForceOperations<Salesforce> i
         return result;
     }
     
+    
+    @Override
+    public void delete(String sObjectName, String sObjectId)
+    {
+        requireAuthorization();
+        restTemplate.delete(api.getBaseUrl() + "/{version}/sobjects/{sObjectName}/{sObjectId}", API_VERSION, sObjectName, sObjectId);
+    }
     
 
 }

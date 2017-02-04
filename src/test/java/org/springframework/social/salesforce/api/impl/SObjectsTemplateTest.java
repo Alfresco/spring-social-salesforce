@@ -72,6 +72,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
 
     @Test
     public void getBlob() throws IOException {
+        responseHeaders.remove("content-type");
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + AbstractSalesForceOperations.API_VERSION + "/sobjects/Account/xxx/avatar"))
                 .andExpect(method(GET))
                 .andRespond(withResponse(new ByteArrayResource("does-not-matter".getBytes("UTF-8")), responseHeaders));

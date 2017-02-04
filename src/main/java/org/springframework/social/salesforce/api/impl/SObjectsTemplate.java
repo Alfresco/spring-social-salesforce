@@ -5,17 +5,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.social.salesforce.api.SObjectDetail;
 import org.springframework.social.salesforce.api.SObjectOperations;
 import org.springframework.social.salesforce.api.SObjectSummary;
 import org.springframework.social.salesforce.api.Salesforce;
 import org.springframework.social.support.URIBuilder;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,13 +68,12 @@ public class SObjectsTemplate extends AbstractSalesForceOperations<Salesforce> i
     @Override
     public InputStream getBlob(String name, String id, String field) {
         requireAuthorization();
-        return restTemplate.execute(api.getBaseUrl() + "/{version}/sobjects/{name}/{id}/{field}",
-                HttpMethod.GET, null, new ResponseExtractor<InputStream>() {
-                    @Override
-                    public InputStream extractData(ClientHttpResponse response) throws IOException {
-                        return response.getBody();
-                    }
-                }, API_VERSION, name, id, field);
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<byte[]> response =  restTemplate.exchange(
+                api.getBaseUrl() + "/{version}/sobjects/{name}/{id}/{field}", HttpMethod.GET, entity, byte[].class,
+                API_VERSION, name, id, field);
+        return new ByteArrayInputStream(response.getBody());
     }
 
     @Override

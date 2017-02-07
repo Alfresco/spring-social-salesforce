@@ -27,7 +27,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
 
     @Test
     public void getSObjects() {
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + AbstractSalesForceOperations.API_VERSION + "/sobjects"))
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects"))
                 .andExpect(method(GET))
                 .andRespond(withResponse(loadResource("sobjects.json"), responseHeaders));
         List<Map> sobjects = salesforce.sObjectsOperations().getSObjects();
@@ -35,12 +35,12 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
         assertEquals("Account", sobjects.get(0).get("name"));
         assertEquals("Account", sobjects.get(0).get("label"));
         assertEquals("Accounts", sobjects.get(0).get("labelPlural"));
-        assertEquals("/services/data/v23.0/sobjects/Account", ((Map) sobjects.get(0).get("urls")).get("sobject"));
+        assertEquals("/services/data/v37.0/sobjects/Account", ((Map) sobjects.get(0).get("urls")).get("sobject"));
     }
 
     @Test
     public void getSObject() {
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + AbstractSalesForceOperations.API_VERSION + "/sobjects/Account"))
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Account"))
                 .andExpect(method(GET))
                 .andRespond(withResponse(loadResource("account.json"), responseHeaders));
         SObjectSummary account = salesforce.sObjectsOperations().getSObjectSummary("Account");
@@ -50,12 +50,28 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
         assertEquals(true, account.isUndeletable());
         assertEquals("001", account.getKeyPrefix());
         assertEquals(false, account.isCustom());
-        assertEquals("/services/data/v23.0/sobjects/Account/{ID}", account.getUrls().get("rowTemplate"));
+        assertEquals("/services/data/v37.0/sobjects/Account/{ID}", account.getUrls().get("rowTemplate"));
+    }
+
+    @Test
+    public void getSObject2() {
+        salesforce.apiOperations().setVersion("v38.0");
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Account"))
+                  .andExpect(method(GET))
+                  .andRespond(withResponse(loadResource("account2.json"), responseHeaders));
+        SObjectSummary account = salesforce.sObjectsOperations().getSObjectSummary("Account");
+        assertNotNull(account);
+        assertEquals("Account", account.getName());
+        assertEquals("Account", account.getLabel());
+        assertEquals(true, account.isUndeletable());
+        assertEquals("001", account.getKeyPrefix());
+        assertEquals(false, account.isCustom());
+        assertEquals("/services/data/v38.0/sobjects/Account/{ID}", account.getUrls().get("rowTemplate"));
     }
 
     @Test
     public void describeSObject() {
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + AbstractSalesForceOperations.API_VERSION + "/sobjects/Account/describe"))
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Account/describe"))
                 .andExpect(method(GET))
                 .andRespond(withResponse(loadResource("account_desc.json"), responseHeaders));
         SObjectDetail account = salesforce.sObjectsOperations().describeSObject("Account");
@@ -72,7 +88,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
 
     @Test
     public void getBlob() throws IOException {
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + AbstractSalesForceOperations.API_VERSION + "/sobjects/Account/xxx/avatar"))
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Account/xxx/avatar"))
                 .andExpect(method(GET))
                 .andRespond(withResponse(new ByteArrayResource("does-not-matter".getBytes("UTF-8")), responseHeaders));
         BufferedReader reader = new BufferedReader(new InputStreamReader(salesforce.sObjectsOperations().getBlob("Account", "xxx", "avatar")));
@@ -81,7 +97,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
 
     @Test
     public void testCreate() throws IOException {
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + AbstractSalesForceOperations.API_VERSION + "/sobjects/Lead"))
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Lead"))
                 .andExpect(method(POST))
                 .andRespond(withResponse(new ByteArrayResource("{\"Id\" : \"1234\"}".getBytes("UTF-8")), responseHeaders));
         Map<String, Object> fields = new HashMap<String, Object>();
@@ -97,7 +113,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
     public void testUpdate() throws IOException {
         // salesforce returns an empty body with a success code if no failures.
         // But, have to mock a json string to satisfy Mock Rest service.
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + AbstractSalesForceOperations.API_VERSION + "/sobjects/Lead/abc123?_HttpMethod=PATCH"))
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Lead/abc123?_HttpMethod=PATCH"))
                 .andExpect(method(POST))
                 .andRespond(withResponse("{}", responseHeaders));
         Map<String, Object> leadData = new HashMap<String, Object>();
@@ -112,7 +128,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
     public void testDelete() throws IOException {
         // salesforce returns an empty body with a success code if no failures.
         // But, have to mock a json string to satisfy Mock Rest service.
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + AbstractSalesForceOperations.API_VERSION + "/sobjects/Lead/abc123"))
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Lead/abc123"))
                 .andExpect(method(DELETE))
                 .andRespond(withResponse("{}", responseHeaders));
         salesforce.sObjectsOperations().delete("Lead", "abc123");

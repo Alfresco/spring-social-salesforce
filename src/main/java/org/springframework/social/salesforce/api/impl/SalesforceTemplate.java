@@ -86,7 +86,6 @@ public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Sale
         return apiOperations;
     }
 
-
     @Override
     public ApiOperations apiOperations(String instanceUrl)
     {

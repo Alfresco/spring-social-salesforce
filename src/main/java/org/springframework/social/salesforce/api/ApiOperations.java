@@ -10,8 +10,15 @@ import java.util.Map;
  */
 public interface ApiOperations {
 
+    static final String DEFAULT_API_VERSION = "v37.0";
+
     List<ApiVersion> getVersions();
 
     Map<String, String> getServices(String version);
 
+    Map<String, String> getServices();
+
+    void setVersion(String version);
+
+    String getVersion();
 }

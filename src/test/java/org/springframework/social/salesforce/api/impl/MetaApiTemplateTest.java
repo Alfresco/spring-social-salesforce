@@ -30,14 +30,48 @@ public class MetaApiTemplateTest extends AbstractSalesforceTest {
     }
 
     @Test
-    public void getServices() {
+         public void getServices() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/v23.0"))
-                .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("services.json"), responseHeaders));
-        Map<String, String> services = salesforce.apiOperations().getServices("23.0");
+                  .andExpect(method(GET))
+                  .andRespond(withResponse(loadResource("services.json"), responseHeaders));
+        Map<String, String> services = salesforce.apiOperations().getServices("v23.0");
         assertEquals(6, services.size());
         assertEquals("/services/data/v23.0/sobjects", services.get("sobjects"));
         assertEquals("/services/data/v23.0/chatter", services.get("chatter"));
+    }
+
+    @Test
+    public void getServices2() {
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/v37.0"))
+                  .andExpect(method(GET))
+                  .andRespond(withResponse(loadResource("services2.json"), responseHeaders));
+        Map<String, String> services = salesforce.apiOperations().getServices();
+        assertEquals(6, services.size());
+        assertEquals("/services/data/v37.0/sobjects", services.get("sobjects"));
+        assertEquals("/services/data/v37.0/chatter", services.get("chatter"));
+    }
+
+    @Test
+    public void getVersion()
+    {
+        String version = salesforce.apiOperations().getVersion();
+        assertEquals("v37.0", version);
+    }
+
+    @Test
+    public void setVersion()
+    {
+        salesforce.apiOperations().setVersion("v38.0");
+        String version = salesforce.apiOperations().getVersion();
+        assertEquals("v38.0", version);
+    }
+
+    @Test
+    public void setVersion2()
+    {
+        salesforce.apiOperations().setVersion("38.0");
+        String version = salesforce.apiOperations().getVersion();
+        assertEquals("v37.0", version);
     }
 
 }

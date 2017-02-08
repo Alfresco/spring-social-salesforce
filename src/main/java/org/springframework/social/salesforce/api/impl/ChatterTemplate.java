@@ -43,7 +43,7 @@ public class ChatterTemplate extends AbstractSalesForceOperations<Salesforce> im
     public SalesforceProfile getUserProfile(String userId) {
         requireAuthorization();
         
-        return restTemplate.exchange(api.getBaseUrl() + "/{version}/chatter/users/{id}", HttpMethod.GET, new HttpEntity<String>("",getChatterHeader()), SalesforceProfile.class, "v23.0", userId).getBody();
+        return restTemplate.exchange(api.getBaseUrl() + "/{version}/chatter/users/{id}", HttpMethod.GET, new HttpEntity<String>("",getChatterHeader()), SalesforceProfile.class, getVersion(), userId).getBody();
         
         //TODO back rev'd 
         //return restTemplate.getForObject(api.getBaseUrl() + "/{version}/chatter/users/{id}", SalesforceProfile.class, "v23.0", userId);
@@ -58,7 +58,7 @@ public class ChatterTemplate extends AbstractSalesForceOperations<Salesforce> im
     public Status getStatus(String userId) {
         requireAuthorization();
 
-        JsonNode node = restTemplate.exchange(api.getBaseUrl() + "/{version}/chatter/users/{userId}/status", HttpMethod.GET, new HttpEntity<String>("", getChatterHeader()), JsonNode.class, "v23.0", userId).getBody();
+        JsonNode node = restTemplate.exchange(api.getBaseUrl() + "/{version}/chatter/users/{userId}/status", HttpMethod.GET, new HttpEntity<String>("", getChatterHeader()), JsonNode.class, getVersion(), userId).getBody();
         //TODO back rev'd
         //JsonNode node = restTemplate.getForObject(api.getBaseUrl() + "/{version}/chatter/users/{userId}/status",
         //        JsonNode.class, "v23.0", userId);
@@ -76,7 +76,7 @@ public class ChatterTemplate extends AbstractSalesForceOperations<Salesforce> im
         MultiValueMap<String, String> post = new LinkedMultiValueMap<String, String>();
         post.add("text", message);
         
-        JsonNode node = restTemplate.exchange(api.getBaseUrl() + "/{version}/chatter/users/{userId}/status", HttpMethod.POST, new HttpEntity<MultiValueMap<String, String>>(post, getChatterHeader()), JsonNode.class, "v23.0", userId).getBody();
+        JsonNode node = restTemplate.exchange(api.getBaseUrl() + "/{version}/chatter/users/{userId}/status", HttpMethod.POST, new HttpEntity<MultiValueMap<String, String>>(post, getChatterHeader()), JsonNode.class, getVersion(), userId).getBody();
         
         //TODO back rev'd
         //JsonNode node = restTemplate.postForObject(api.getBaseUrl() + "/{version}/chatter/users/{userId}/status",

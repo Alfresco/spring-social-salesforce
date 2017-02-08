@@ -25,6 +25,7 @@ import java.util.Map;
  * Default implementation of SObjectOperations.
  * 
  * @author Umut Utkan
+ * @author Jared Ottey
  */
 public class SObjectsTemplate extends AbstractSalesForceOperations<Salesforce> implements SObjectOperations {
 
@@ -38,27 +39,27 @@ public class SObjectsTemplate extends AbstractSalesForceOperations<Salesforce> i
     @Override
     public List<Map> getSObjects() {
         requireAuthorization();
-        JsonNode dataNode = restTemplate.getForObject(api.getBaseUrl() + "/{version}/sobjects", JsonNode.class, API_VERSION);
+        JsonNode dataNode = restTemplate.getForObject(api.getBaseUrl() + "/{version}/sobjects", JsonNode.class, getVersion());
         return api.readList(dataNode.get("sobjects"), Map.class);
     }
 
     @Override
     public SObjectSummary getSObjectSummary(String name) {
         requireAuthorization();
-        JsonNode node = restTemplate.getForObject(api.getBaseUrl() + "/{version}/sobjects/{name}", JsonNode.class, API_VERSION, name);
+        JsonNode node = restTemplate.getForObject(api.getBaseUrl() + "/{version}/sobjects/{name}", JsonNode.class, getVersion(), name);
         return api.readObject(node.get("objectDescribe"), SObjectSummary.class);
     }
 
     @Override
     public SObjectDetail describeSObject(String name) {
         requireAuthorization();
-        return restTemplate.getForObject(api.getBaseUrl() + "/{version}/sobjects/{name}/describe", SObjectDetail.class, API_VERSION, name);
+        return restTemplate.getForObject(api.getBaseUrl() + "/{version}/sobjects/{name}/describe", SObjectDetail.class, getVersion(), name);
     }
 
     @Override
     public Map getRow(String name, String id, String... fields) {
         requireAuthorization();
-        URIBuilder builder = URIBuilder.fromUri(api.getBaseUrl() + "/" + API_VERSION + "/sobjects/" + name + "/" + id);
+        URIBuilder builder = URIBuilder.fromUri(api.getBaseUrl() + "/" + getVersion() + "/sobjects/" + name + "/" + id);
         if (fields.length > 0) {
             builder.queryParam("fields", StringUtils.arrayToCommaDelimitedString(fields));
         }
@@ -72,7 +73,7 @@ public class SObjectsTemplate extends AbstractSalesForceOperations<Salesforce> i
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<byte[]> response =  restTemplate.exchange(
                 api.getBaseUrl() + "/{version}/sobjects/{name}/{id}/{field}", HttpMethod.GET, entity, byte[].class,
-                API_VERSION, name, id, field);
+                getVersion(), name, id, field);
         return new ByteArrayInputStream(response.getBody());
     }
 
@@ -83,7 +84,7 @@ public class SObjectsTemplate extends AbstractSalesForceOperations<Salesforce> i
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map> entity = new HttpEntity<Map>(fields, headers);
-        return restTemplate.postForObject(api.getBaseUrl() + "/{version}/sobjects/{name}", entity, Map.class, API_VERSION, name);
+        return restTemplate.postForObject(api.getBaseUrl() + "/{version}/sobjects/{name}", entity, Map.class, getVersion(), name);
     }
 
     @Override
@@ -93,7 +94,7 @@ public class SObjectsTemplate extends AbstractSalesForceOperations<Salesforce> i
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<Map<String,Object>>(fields, headers);
         Map<String, Object> result =  restTemplate.postForObject(api.getBaseUrl() + "/{version}/sobjects/{sObjectName}/{sObjectId}?_HttpMethod=PATCH", 
-                entity, Map.class, API_VERSION, sObjectName, sObjectId);
+                entity, Map.class, getVersion(), sObjectName, sObjectId);
         // SF returns an empty body on success, so mimic the same update you'd get from a create success for consistency
         if (result == null) {
             result = new HashMap<String, Object>();
@@ -109,7 +110,7 @@ public class SObjectsTemplate extends AbstractSalesForceOperations<Salesforce> i
     public void delete(String sObjectName, String sObjectId)
     {
         requireAuthorization();
-        restTemplate.delete(api.getBaseUrl() + "/{version}/sobjects/{sObjectName}/{sObjectId}", API_VERSION, sObjectName, sObjectId);
+        restTemplate.delete(api.getBaseUrl() + "/{version}/sobjects/{sObjectName}/{sObjectId}", getVersion(), sObjectName, sObjectId);
     }
     
 

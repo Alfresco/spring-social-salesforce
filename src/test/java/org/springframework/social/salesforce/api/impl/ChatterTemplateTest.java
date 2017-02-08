@@ -18,9 +18,9 @@ public class ChatterTemplateTest extends AbstractSalesforceTest {
 
     @Test
     public void getProfile() {
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/v23.0/chatter/users/me"))
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/chatter/users/me"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("profile.json"), responseHeaders));
+                  .andRespond(withResponse(loadResource("profile.json"), responseHeaders));
         SalesforceProfile profile = salesforce.chatterOperations().getUserProfile();
         assertEquals("Umut Utkan", profile.getName());
         assertEquals("umut.utkan@foo.com", profile.getEmail());
@@ -33,9 +33,9 @@ public class ChatterTemplateTest extends AbstractSalesforceTest {
 
     @Test
     public void getStatus() {
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/v23.0/chatter/users/me/status"))
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/chatter/users/me/status"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("chatter-status.json"), responseHeaders));
+                  .andRespond(withResponse(loadResource("chatter-status.json"), responseHeaders));
 
         Status status = salesforce.chatterOperations().getStatus();
         assertNotNull(status);
@@ -44,10 +44,10 @@ public class ChatterTemplateTest extends AbstractSalesforceTest {
 
     @Test
     public void updateStatus() {
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/v23.0/chatter/users/me/status"))
+        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/chatter/users/me/status"))
                 .andExpect(method(POST))
                 .andExpect(body("text=Updating+status+via+%23spring-social-salesforce%21"))
-                .andRespond(withResponse(loadResource("chatter-status.json"), responseHeaders));
+                  .andRespond(withResponse(loadResource("chatter-status.json"), responseHeaders));
 
         Status status = salesforce.chatterOperations().updateStatus("Updating status via #spring-social-salesforce!");
         assertNotNull(status);

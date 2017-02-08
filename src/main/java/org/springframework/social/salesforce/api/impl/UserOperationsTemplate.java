@@ -22,7 +22,7 @@ public class UserOperationsTemplate extends AbstractSalesForceOperations<Salesfo
     @Override
     public SalesforceUserDetails getSalesforceUserDetails() {
         requireAuthorization();
-        return restTemplate.exchange(api.getUserInfoUrl(), HttpMethod.GET, new HttpEntity<>(""), SalesforceUserDetails.class, "v23.0").getBody();
+        return restTemplate.exchange(api.getUserInfoUrl(), HttpMethod.GET, new HttpEntity<>(""), SalesforceUserDetails.class, getVersion()).getBody();
     }
 
 }

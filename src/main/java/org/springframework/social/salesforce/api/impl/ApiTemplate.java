@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.social.salesforce.api.ApiOperations;
 import org.springframework.social.salesforce.api.ApiVersion;
+import org.springframework.social.salesforce.api.InvalidSalesforceApiVersionException;
 import org.springframework.social.salesforce.api.Salesforce;
 import org.springframework.social.support.URIBuilder;
 import org.springframework.web.client.RestTemplate;
@@ -53,10 +54,15 @@ public class ApiTemplate extends AbstractSalesForceOperations<Salesforce> implem
     }
 
     public void setVersion(String version)
+            throws InvalidSalesforceApiVersionException
     {
         if (StringUtils.isNotBlank(version) && validateVersionString(version))
         {
              this.version = version;
+        }
+        else
+        {
+            throw new InvalidSalesforceApiVersionException(version);
         }
     }
 

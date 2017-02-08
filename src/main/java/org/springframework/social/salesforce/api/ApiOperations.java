@@ -18,7 +18,8 @@ public interface ApiOperations {
 
     Map<String, String> getServices();
 
-    void setVersion(String version);
+    void setVersion(String version)
+            throws InvalidSalesforceApiVersionException;
 
     String getVersion();
 }

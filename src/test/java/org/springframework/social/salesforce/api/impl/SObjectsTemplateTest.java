@@ -2,6 +2,7 @@ package org.springframework.social.salesforce.api.impl;
 
 import org.junit.Test;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.social.salesforce.api.InvalidSalesforceApiVersionException;
 import org.springframework.social.salesforce.api.SObjectDetail;
 import org.springframework.social.salesforce.api.SObjectSummary;
 
@@ -55,18 +56,26 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
 
     @Test
     public void getSObject2() {
-        salesforce.apiOperations().setVersion("v38.0");
-        mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Account"))
-                  .andExpect(method(GET))
-                  .andRespond(withResponse(loadResource("account2.json"), responseHeaders));
-        SObjectSummary account = salesforce.sObjectsOperations().getSObjectSummary("Account");
-        assertNotNull(account);
-        assertEquals("Account", account.getName());
-        assertEquals("Account", account.getLabel());
-        assertEquals(true, account.isUndeletable());
-        assertEquals("001", account.getKeyPrefix());
-        assertEquals(false, account.isCustom());
-        assertEquals("/services/data/v38.0/sobjects/Account/{ID}", account.getUrls().get("rowTemplate"));
+        try
+        {
+            salesforce.apiOperations().setVersion("v38.0");
+            mockServer.expect(requestTo(
+                    "https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Account"))
+                      .andExpect(method(GET))
+                      .andRespond(withResponse(loadResource("account2.json"), responseHeaders));
+            SObjectSummary account = salesforce.sObjectsOperations().getSObjectSummary("Account");
+            assertNotNull(account);
+            assertEquals("Account", account.getName());
+            assertEquals("Account", account.getLabel());
+            assertEquals(true, account.isUndeletable());
+            assertEquals("001", account.getKeyPrefix());
+            assertEquals(false, account.isCustom());
+            assertEquals("/services/data/v38.0/sobjects/Account/{ID}", account.getUrls().get("rowTemplate"));
+        }
+        catch (InvalidSalesforceApiVersionException e)
+        {
+            fail("InvalidSalesforceApiVersionException thrown");
+        }
     }
 
     @Test

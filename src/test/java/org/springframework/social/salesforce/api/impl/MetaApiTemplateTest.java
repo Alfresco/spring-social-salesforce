@@ -2,11 +2,17 @@ package org.springframework.social.salesforce.api.impl;
 
 import org.junit.Test;
 import org.springframework.social.salesforce.api.ApiVersion;
+import org.springframework.social.salesforce.api.InvalidSalesforceApiVersionException;
 
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.social.test.client.RequestMatchers.method;
 import static org.springframework.social.test.client.RequestMatchers.requestTo;
@@ -61,17 +67,30 @@ public class MetaApiTemplateTest extends AbstractSalesforceTest {
     @Test
     public void setVersion()
     {
-        salesforce.apiOperations().setVersion("v38.0");
-        String version = salesforce.apiOperations().getVersion();
-        assertEquals("v38.0", version);
+        try
+        {
+            salesforce.apiOperations().setVersion("v38.0");
+            String version = salesforce.apiOperations().getVersion();
+            assertEquals("v38.0", version);
+        }
+        catch (InvalidSalesforceApiVersionException e)
+        {
+            fail("InvalidSalesforceApiVersionException thrown");
+        }
     }
 
     @Test
     public void setVersion2()
     {
-        salesforce.apiOperations().setVersion("38.0");
-        String version = salesforce.apiOperations().getVersion();
-        assertEquals("v37.0", version);
+        try
+        {
+            salesforce.apiOperations().setVersion("38.0");
+            fail("InvalidSalesforceApiVersionException not thrown");
+        }
+        catch (InvalidSalesforceApiVersionException e)
+        {
+            assertEquals("38.0 is not a valid Salesforce Api version.", e.getMessage());
+        }
     }
 
 }

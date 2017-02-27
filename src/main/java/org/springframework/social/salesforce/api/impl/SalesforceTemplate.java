@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -24,6 +26,7 @@ import org.springframework.social.salesforce.api.impl.json.SalesforceModule;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -85,7 +88,6 @@ public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Sale
     {
         return apiOperations;
     }
-
 
     @Override
     public ApiOperations apiOperations(String instanceUrl)
@@ -204,15 +206,24 @@ public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Sale
         messageConverters.add(new StringHttpMessageConverter());
         messageConverters.add(getFormMessageConverter());
         messageConverters.add(this.getJsonMessageConverter2());
-        messageConverters.add(getByteArrayMessageConverter());
+        messageConverters.add(this.getByteArrayMessageConverter());
         return messageConverters;
     }
 
-    protected MappingJackson2HttpMessageConverter getJsonMessageConverter2() {
+    protected MappingJackson2HttpMessageConverter getJsonMessageConverter2()
+    {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new SalesforceModule());
         converter.setObjectMapper(objectMapper);
+        return converter;
+    }
+
+    @Override
+    protected ByteArrayHttpMessageConverter getByteArrayMessageConverter()
+    {
+        ByteArrayHttpMessageConverter converter = new ByteArrayHttpMessageConverter();
+        converter.setSupportedMediaTypes(Arrays.asList(MediaType.ALL));
         return converter;
     }
 

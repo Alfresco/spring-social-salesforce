@@ -24,7 +24,7 @@ public class RecentTemplate extends AbstractSalesForceOperations<Salesforce> imp
 
     @Override
     public List<ResultItem> recent() {
-        return api.readList(restTemplate.getForObject(api.getBaseUrl() + "/" + API_VERSION + "/recent", JsonNode.class), ResultItem.class);
+        return api.readList(restTemplate.getForObject(api.getBaseUrl() + "/" + getVersion() + "/recent", JsonNode.class), ResultItem.class);
     }
 
 }

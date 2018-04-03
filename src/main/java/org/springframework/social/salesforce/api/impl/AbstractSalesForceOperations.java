@@ -20,7 +20,7 @@ public class AbstractSalesForceOperations<T extends ApiBinding> {
 
     protected void requireAuthorization() {
         if (!api.isAuthorized()) {
-            throw new MissingAuthorizationException();
+            throw new MissingAuthorizationException(Salesforce.PROVIDER_ID);
         }
     }
 

@@ -17,9 +17,10 @@ import static org.junit.Assert.*;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.social.test.client.RequestMatchers.method;
-import static org.springframework.social.test.client.RequestMatchers.requestTo;
-import static org.springframework.social.test.client.ResponseCreators.withResponse;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 /**
  * @author Umut Utkan
@@ -30,7 +31,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
     public void getSObjects() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("sobjects.json"), responseHeaders));
+                .andRespond(withStatus(OK).body(loadResource("sobjects.json")).headers(responseHeaders));
         List<Map> sobjects = salesforce.sObjectsOperations().getSObjects();
         assertEquals(160, sobjects.size());
         assertEquals("Account", sobjects.get(0).get("name"));
@@ -43,7 +44,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
     public void getSObject() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Account"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("account.json"), responseHeaders));
+                .andRespond(withStatus(OK).body(loadResource("account.json")).headers(responseHeaders));
         SObjectSummary account = salesforce.sObjectsOperations().getSObjectSummary("Account");
         assertNotNull(account);
         assertEquals("Account", account.getName());
@@ -62,7 +63,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
             mockServer.expect(requestTo(
                     "https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Account"))
                       .andExpect(method(GET))
-                      .andRespond(withResponse(loadResource("account2.json"), responseHeaders));
+                      .andRespond(withStatus(OK).body(loadResource("account2.json")).headers(responseHeaders));
             SObjectSummary account = salesforce.sObjectsOperations().getSObjectSummary("Account");
             assertNotNull(account);
             assertEquals("Account", account.getName());
@@ -82,7 +83,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
     public void describeSObject() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Account/describe"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("account_desc.json"), responseHeaders));
+                .andRespond(withStatus(OK).body(loadResource("account_desc.json")).headers(responseHeaders));
         SObjectDetail account = salesforce.sObjectsOperations().describeSObject("Account");
         assertNotNull(account);
         assertEquals("Account", account.getName());
@@ -100,7 +101,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
         responseHeaders.remove("content-type");
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Account/xxx/avatar"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(new ByteArrayResource("does-not-matter".getBytes("UTF-8")), responseHeaders));
+                .andRespond(withStatus(OK).body(new ByteArrayResource("does-not-matter".getBytes("UTF-8"))).headers(responseHeaders));
         BufferedReader reader = new BufferedReader(new InputStreamReader(salesforce.sObjectsOperations().getBlob("Account", "xxx", "avatar")));
         assertEquals("does-not-matter", reader.readLine());
     }
@@ -109,7 +110,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
     public void testCreate() throws IOException {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Lead"))
                 .andExpect(method(POST))
-                .andRespond(withResponse(new ByteArrayResource("{\"Id\" : \"1234\"}".getBytes("UTF-8")), responseHeaders));
+                .andRespond(withStatus(OK).body(new ByteArrayResource("{\"Id\" : \"1234\"}".getBytes("UTF-8"))).headers(responseHeaders));
         Map<String, Object> fields = new HashMap<String, Object>();
         fields.put("LastName", "Doe");
         fields.put("FirstName", "John");
@@ -125,7 +126,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
         // But, have to mock a json string to satisfy Mock Rest service.
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Lead/abc123?_HttpMethod=PATCH"))
                 .andExpect(method(POST))
-                .andRespond(withResponse("{}", responseHeaders));
+                .andRespond(withStatus(OK).body("{}").headers(responseHeaders));
         Map<String, Object> leadData = new HashMap<String, Object>();
         leadData.put("LastName", "Doe");
         leadData.put("FirstName", "John");
@@ -140,7 +141,7 @@ public class SObjectsTemplateTest extends AbstractSalesforceTest {
         // But, have to mock a json string to satisfy Mock Rest service.
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/sobjects/Lead/abc123"))
                 .andExpect(method(DELETE))
-                .andRespond(withResponse("{}", responseHeaders));
+                .andRespond(withStatus(OK).body("{}").headers(responseHeaders));
         salesforce.sObjectsOperations().delete("Lead", "abc123");
         //if it makes it here with no error then it is good.
         assertTrue(true);

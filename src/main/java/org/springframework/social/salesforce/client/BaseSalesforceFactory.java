@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
-import static org.springframework.social.salesforce.api.Salesforce.PROVIDER_ID;
+import static org.springframework.social.salesforce.connect.SalesforceServiceProvider.ID;
 
 /**
  * Default implementation of SalesforceFactory.
@@ -70,7 +70,7 @@ public class BaseSalesforceFactory implements SalesforceFactory {
     private static RestTemplate createRestTemplate() {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(ClientHttpRequestFactorySelector.getRequestFactory());
-        restTemplate.setErrorHandler(new ErrorHandler(PROVIDER_ID));
+        restTemplate.setErrorHandler(new ErrorHandler(ID));
         return restTemplate;
     }
 

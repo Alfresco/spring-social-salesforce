@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.social.salesforce.api.Salesforce.PROVIDER_ID;
+import static org.springframework.social.salesforce.connect.SalesforceServiceProvider.ID;
 
 
 /**
@@ -50,20 +50,20 @@ public class SalesforceErrorHandler extends DefaultResponseErrorHandler {
 
     private void handleSalesforceError(HttpStatus statusCode, Map<String, Object> errorDetails) {
         if (statusCode.equals(HttpStatus.NOT_FOUND)) {
-            throw new ResourceNotFoundException(PROVIDER_ID, extractErrorMessage(errorDetails));
+            throw new ResourceNotFoundException(ID, extractErrorMessage(errorDetails));
         } else if (statusCode.equals(HttpStatus.SERVICE_UNAVAILABLE)) {
-            throw new RateLimitExceededException(PROVIDER_ID);
+            throw new RateLimitExceededException(ID);
         } else if (statusCode.equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
-            throw new InternalServerErrorException(PROVIDER_ID, errorDetails == null ? "Contact Salesforce administrator." : extractErrorMessage(errorDetails));
+            throw new InternalServerErrorException(ID, errorDetails == null ? "Contact Salesforce administrator." : extractErrorMessage(errorDetails));
         } else if (statusCode.equals(HttpStatus.BAD_REQUEST) || statusCode.equals(HttpStatus.MULTIPLE_CHOICES)) {
-            throw new SalesforceRequestException(PROVIDER_ID, errorDetails);
+            throw new SalesforceRequestException(ID, errorDetails);
         } else if (statusCode.equals(HttpStatus.UNAUTHORIZED)) {
-            throw new InvalidAuthorizationException(PROVIDER_ID, extractErrorMessage(errorDetails));
+            throw new InvalidAuthorizationException(ID, extractErrorMessage(errorDetails));
         } else if (statusCode.equals(HttpStatus.FORBIDDEN)) {
             if(errorDetails.get(ERROR_CODE).equals(BAD_OAUTH_TOKEN))
             {
                 //This is recoverable by refreshing oauth tokens.
-                throw new InvalidAuthorizationException(PROVIDER_ID, extractErrorMessage(errorDetails));
+                throw new InvalidAuthorizationException(ID, extractErrorMessage(errorDetails));
             }
             else
             {
@@ -77,9 +77,9 @@ public class SalesforceErrorHandler extends DefaultResponseErrorHandler {
             super.handleError(response);
         } catch (Exception e) {
             if (errorDetails == null) {
-                throw new UncategorizedApiException(PROVIDER_ID, "No error details from Salesforce.", e);
+                throw new UncategorizedApiException(ID, "No error details from Salesforce.", e);
             } else {
-                throw new UncategorizedApiException(PROVIDER_ID, extractErrorMessage(errorDetails), e);
+                throw new UncategorizedApiException(ID, extractErrorMessage(errorDetails), e);
             }
         }
     }
@@ -109,7 +109,7 @@ public class SalesforceErrorHandler extends DefaultResponseErrorHandler {
             }
 
             logger.error("Unable to parse salesforce response: {} ", new String(body));
-            throw new UncategorizedApiException(PROVIDER_ID, "Unable to read salesforce response.", e);
+            throw new UncategorizedApiException(ID, "Unable to read salesforce response.", e);
         }
 
         return null;
@@ -142,7 +142,7 @@ public class SalesforceErrorHandler extends DefaultResponseErrorHandler {
         }
         catch (IOException e)
         {
-            throw new UncategorizedApiException(PROVIDER_ID, "Unable to extract Salesforce response.", e);
+            throw new UncategorizedApiException(ID, "Unable to extract Salesforce response.", e);
         }
     }
 

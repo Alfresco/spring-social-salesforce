@@ -4,6 +4,8 @@ import org.springframework.social.ApiBinding;
 import org.springframework.social.MissingAuthorizationException;
 import org.springframework.social.salesforce.api.Salesforce;
 
+import static org.springframework.social.salesforce.connect.SalesforceServiceProvider.ID;
+
 
 /**
  * @author Umut Utkan
@@ -20,7 +22,7 @@ public class AbstractSalesForceOperations<T extends ApiBinding> {
 
     protected void requireAuthorization() {
         if (!api.isAuthorized()) {
-            throw new MissingAuthorizationException(Salesforce.PROVIDER_ID);
+            throw new MissingAuthorizationException(ID);
         }
     }
 

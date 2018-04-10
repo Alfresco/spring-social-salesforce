@@ -3,7 +3,7 @@
 
     <groupId>org.springframework.social</groupId>
     <artifactId>spring-social-salesforce</artifactId>
-    <version>1.2.2-alfresco-patched-${maven.build.timestamp}-SNAPSHOT</version>
+    <version>1.2.2-alfresco-patched-20180410</version>
     <packaging>jar</packaging>
 
     <name>spring-social-salesforce</name>
@@ -319,7 +319,7 @@
         <connection>scm:git:https://github.com/Alfresco/spring-social-salesforce.git</connection>
         <developerConnection>scm:git:https://github.com/Alfresco/spring-social-salesforce.git</developerConnection>
         <url>https://github.com/Alfresco/spring-social-salesforce</url>
-        <tag>HEAD</tag>
+        <tag>release-1.2.2-alfresco-patched-20180410</tag>
     </scm>
 
     <distributionManagement>

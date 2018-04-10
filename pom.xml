@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.springframework.social</groupId>
     <artifactId>spring-social-salesforce</artifactId>
-    <version>1.2.2-alfresco-patched-SNAPSHOT</version>
+    <version>1.2.2-alfresco-patched-${maven.build.timestamp}-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>spring-social-salesforce</name>
@@ -13,6 +12,7 @@
     <properties>
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>0.9.29</logback.version>
@@ -306,4 +306,22 @@
         </repository>
     </repositories>
 
+    <scm>
+        <connection>scm:git:https://github.com/Alfresco/spring-social-salesforce.git</connection>
+        <developerConnection>scm:git:https://github.com/Alfresco/spring-social-salesforce.git</developerConnection>
+        <url>https://github.com/Alfresco/spring-social-salesforce</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <!-- Public repositories -->
+        <repository>
+            <id>alfresco-public</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/public</url>
+        </repository>
+        <snapshotRepository>
+            <id>alfresco-public-snapshots</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/public-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

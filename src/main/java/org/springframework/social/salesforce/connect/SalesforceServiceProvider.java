@@ -11,6 +11,8 @@ import org.springframework.social.salesforce.api.impl.SalesforceTemplate;
  */
 public class SalesforceServiceProvider extends AbstractOAuth2ServiceProvider<Salesforce> {
 
+    public final static String ID = "salesforce";
+
     public SalesforceServiceProvider(String clientId, String clientSecret) {
         this(clientId, clientSecret,
                 "https://login.salesforce.com/services/oauth2/authorize",

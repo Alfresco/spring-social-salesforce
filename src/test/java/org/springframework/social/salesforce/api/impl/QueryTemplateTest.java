@@ -9,9 +9,10 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.social.test.client.RequestMatchers.method;
-import static org.springframework.social.test.client.RequestMatchers.requestTo;
-import static org.springframework.social.test.client.ResponseCreators.withResponse;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 /**
  * @author Umut Utkan
@@ -22,7 +23,7 @@ public class QueryTemplateTest extends AbstractSalesforceTest {
     public void simpleQuery() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/query?q=SELECT+Id%2C+Name%2C+BillingCity+FROM+Account"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("query-simple.json"), responseHeaders));
+                .andRespond(withStatus(OK).body(loadResource("query-simple.json")).headers(responseHeaders));
         QueryResult result = salesforce.queryOperations().query("SELECT Id, Name, BillingCity FROM Account");
 
         assertEquals(12, result.getRecords().size());
@@ -41,7 +42,7 @@ public class QueryTemplateTest extends AbstractSalesforceTest {
     public void whereQuery() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/query?q=SELECT+Id+FROM+Contact+WHERE+Name+LIKE+%27U%25%27+AND+MailingCity+%3D+%27Istanbul%27"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("query-where.json"), responseHeaders));
+                .andRespond(withStatus(OK).body(loadResource("query-where.json")).headers(responseHeaders));
         QueryResult result = salesforce.queryOperations().query("SELECT Id FROM Contact WHERE Name LIKE 'U%' AND MailingCity = 'Istanbul'");
 
         assertEquals(2, result.getRecords().size());
@@ -57,7 +58,7 @@ public class QueryTemplateTest extends AbstractSalesforceTest {
     public void child2parentQuery() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/query?q=SELECT+Contact.FirstName%2C+Contact.Account.Name+FROM+Contact"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("query-child2parent.json"), responseHeaders));
+                .andRespond(withStatus(OK).body(loadResource("query-child2parent.json")).headers(responseHeaders));
         QueryResult result = salesforce.queryOperations().query("SELECT Contact.FirstName, Contact.Account.Name FROM Contact");
 
         assertEquals(22, result.getRecords().size());
@@ -79,7 +80,7 @@ public class QueryTemplateTest extends AbstractSalesforceTest {
     public void countQuery() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/query?q=SELECT+COUNT%28%29+FROM+Contact"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("query-count.json"), responseHeaders));
+                .andRespond(withStatus(OK).body(loadResource("query-count.json")).headers(responseHeaders));
         QueryResult result = salesforce.queryOperations().query("SELECT COUNT() FROM Contact");
 
         assertEquals(22, result.getTotalSize());
@@ -90,7 +91,7 @@ public class QueryTemplateTest extends AbstractSalesforceTest {
     public void groupByQuery() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/query?q=SELECT+LeadSource%2C+COUNT%28Name%29+FROM+Lead+GROUP+BY+LeadSource"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("query-groupby.json"), responseHeaders));
+                .andRespond(withStatus(OK).body(loadResource("query-groupby.json")).headers(responseHeaders));
         QueryResult result = salesforce.queryOperations().query("SELECT LeadSource, COUNT(Name) FROM Lead GROUP BY LeadSource");
 
         assertEquals(4, result.getRecords().size());
@@ -107,7 +108,7 @@ public class QueryTemplateTest extends AbstractSalesforceTest {
     public void parent2childQuery() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/query?q=SELECT+Name%2C+%28SELECT+LastName+FROM+Contacts%29+FROM+Account"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("query-parent2child.json"), responseHeaders));
+                .andRespond(withStatus(OK).body(loadResource("query-parent2child.json")).headers(responseHeaders));
         QueryResult result = salesforce.queryOperations().query("SELECT Name, (SELECT LastName FROM Contacts) FROM Account");
 
         assertEquals(12, result.getRecords().size());

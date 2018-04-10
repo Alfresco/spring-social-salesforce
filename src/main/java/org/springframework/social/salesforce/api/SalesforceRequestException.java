@@ -23,15 +23,15 @@ public class SalesforceRequestException extends ApiException {
     private final List<String> fields;
     private final String code;
 
-    public SalesforceRequestException(String message) {
-        super(message);
+    public SalesforceRequestException(String providerId, String message) {
+        super(providerId, message);
         this.code = null;
         this.fields = null;
     }
 
     @SuppressWarnings("unchecked")
-    public SalesforceRequestException(Map<String, Object> errorDetails) {
-        super((String)errorDetails.get("message"));
+    public SalesforceRequestException(String providerId, Map<String, Object> errorDetails) {
+        super(providerId, (String)errorDetails.get("message"));
 
         this.code = StringUtils.defaultString((String)errorDetails.get("errorCode"), "UNKNOWN");
         this.fields = (List<String>) errorDetails.get("fields");

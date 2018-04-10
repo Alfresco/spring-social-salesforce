@@ -7,9 +7,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.social.test.client.RequestMatchers.method;
-import static org.springframework.social.test.client.RequestMatchers.requestTo;
-import static org.springframework.social.test.client.ResponseCreators.withResponse;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 /**
  * @author Umut Utkan
@@ -20,7 +21,7 @@ public class RecentTemplateTest extends AbstractSalesforceTest {
     public void search() {
         mockServer.expect(requestTo("https://na7.salesforce.com/services/data/" + salesforce.apiOperations().getVersion() + "/recent"))
                 .andExpect(method(GET))
-                .andRespond(withResponse(loadResource("recent.json"), responseHeaders));
+                .andRespond(withStatus(OK).body(loadResource("recent.json")).headers(responseHeaders));
         List<ResultItem> items = salesforce.recentOperations().recent();
         assertEquals(9, items.size());
         assertEquals("User", items.get(0).getType());

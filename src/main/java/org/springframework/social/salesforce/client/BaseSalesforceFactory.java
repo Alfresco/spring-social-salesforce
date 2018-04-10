@@ -1,13 +1,15 @@
 package org.springframework.social.salesforce.client;
 
-import java.util.Map;
-
 import org.springframework.social.salesforce.api.Salesforce;
 import org.springframework.social.salesforce.api.impl.SalesforceTemplate;
 import org.springframework.social.support.ClientHttpRequestFactorySelector;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
+
+import static org.springframework.social.salesforce.connect.SalesforceServiceProvider.ID;
 
 /**
  * Default implementation of SalesforceFactory.
@@ -68,7 +70,7 @@ public class BaseSalesforceFactory implements SalesforceFactory {
     private static RestTemplate createRestTemplate() {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(ClientHttpRequestFactorySelector.getRequestFactory());
-        restTemplate.setErrorHandler(new ErrorHandler());
+        restTemplate.setErrorHandler(new ErrorHandler(ID));
         return restTemplate;
     }
 

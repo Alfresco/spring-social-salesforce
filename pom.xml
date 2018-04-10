@@ -1,24 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.springframework.social</groupId>
     <artifactId>spring-social-salesforce</artifactId>
-    <version>1.2.2-alfresco-patched-SNAPSHOT</version>
+    <version>1.2.2-alfresco-patched-${maven.build.timestamp}-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>spring-social-salesforce</name>
     <url>https://github.com/Alfresco/spring-social-salesforce</url>
 
     <properties>
-        <jdk.version>1.7</jdk.version>
+        <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>0.9.29</logback.version>
-        <spring.version>3.2.10.RELEASE</spring.version>
-        <spring-social.version>1.0.3.RELEASE</spring-social.version>
-        <jackson.version>2.3.2</jackson.version>
+        <spring.version>5.0.4.RELEASE</spring.version>
+        <spring-social.version>2.0.0.M4</spring-social.version>
+        <jackson.version>2.9.5</jackson.version>
         <joor.version>0.9.4</joor.version>
         <junit.version>4.10</junit.version>
         <mockito.version>1.9.0</mockito.version>
@@ -39,9 +39,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-test</artifactId>
-            <version>${spring-social.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -306,4 +306,22 @@
         </repository>
     </repositories>
 
+    <scm>
+        <connection>scm:git:https://github.com/Alfresco/spring-social-salesforce.git</connection>
+        <developerConnection>scm:git:https://github.com/Alfresco/spring-social-salesforce.git</developerConnection>
+        <url>https://github.com/Alfresco/spring-social-salesforce</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <!-- Public repositories -->
+        <repository>
+            <id>alfresco-public</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/public</url>
+        </repository>
+        <snapshotRepository>
+            <id>alfresco-public-snapshots</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/public-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

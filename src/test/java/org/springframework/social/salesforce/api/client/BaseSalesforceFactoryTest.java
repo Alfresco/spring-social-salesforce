@@ -6,13 +6,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.social.salesforce.api.Salesforce;
 import org.springframework.social.salesforce.client.BaseSalesforceFactory;
-import org.springframework.social.test.client.MockRestServiceServer;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.social.test.client.RequestMatchers.*;
-import static org.springframework.social.test.client.ResponseCreators.withResponse;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 /**
  * @author Umut Utkan
@@ -28,8 +29,8 @@ public class BaseSalesforceFactoryTest {
 
         mockServer.expect(requestTo("https://login.salesforce.com/services/oauth2/token"))
                 .andExpect(method(POST))
-                .andExpect(body("grant_type=password&client_id=client-id&client_secret=client-secret&username=my-username&password=my-passwordsecurity-token"))
-                .andRespond(withResponse(new ClassPathResource("/client-token.json", getClass()), responseHeaders));
+                .andExpect(content().string("grant_type=password&client_id=client-id&client_secret=client-secret&username=my-username&password=my-passwordsecurity-token"))
+                .andRespond(withStatus(OK).body(new ClassPathResource("/client-token.json", getClass())).headers(responseHeaders));
 
         Salesforce template = new BaseSalesforceFactory("client-id", "client-secret", restTemplate)
                 .create("my-username", "my-password", "security-token");

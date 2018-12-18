@@ -171,7 +171,6 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <argLine>-XX:-UseSplitVerifier</argLine>
                     <includes>
                         <include>**/*.class</include>
                     </includes>

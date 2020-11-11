@@ -1,0 +1,58 @@
+# Auto-generated .travis.yml file
+# Generated 2020-11-11 20:20:56 from Bamboo build plan INTEGRATIONS-SSS
+
+language: java
+
+jdk:
+  - openjdk11
+
+dist: xenial
+
+addons:
+  artifacts: true
+
+stages:
+  - name: Default Stage
+  - name: Scan
+  - name: Release
+    if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message !~ /\[no-release\]/
+
+jobs:
+  include:
+    - stage: "Default Stage"
+      name: "Default Job"
+      script:
+        # Build + Deploy
+        - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_KEY=${AWS_SECRET_KEY} mvn --batch-mode clean source:jar source:test-jar deploy -DaltDeploymentRepository=alfresco-internal::default::https://artifacts.alfresco.com/nexus/content/repositories/snapshots/
+        # Sonar
+        - mvn --batch-mode clean compile sonar:sonar -P !check-license-headers
+    - stage: "Scan"
+      name: "Whitesource Scan"
+      script:
+        # Build
+        - mvn clean install -DskipTests
+        # Run the Whitesource scan
+        - release-scripts/whitesource-scan.sh Testing
+      before_script:
+        # Release Scripts Checkout
+        - git clone git@git.alfresco.com:Build/release-scripts.git release-scripts
+      after_script:
+        - artifacts upload target/site/whitesource/*.*
+    - stage: "Release"
+      name: "Release"
+      script:
+        # Check Branch
+        - |
+          sh -c "$(cat <<'EOF'
+          #!/bin/sh
+          set -o errexit
+          
+          if [ "$2" != "$1" ]; then
+              echo "Releases can only be run from branch $1" 1>&2
+              exit 1
+          fi
+          exit 0
+          EOF
+          )" script.sh ${RELEASE_BRANCH} ${TRAVIS_BRANCH}
+        # Release
+        - GIT_AUTHOR_NAME=alfresco-build GIT_AUTHOR_EMAIL=build@alfresco.com GIT_COMMITTER_NAME=alfresco-build GIT_COMMITTER_EMAIL=build@alfresco.com AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} AWS_SECRET_KEY=${AWS_SECRET_KEY} mvn --batch-mode -Darguments=-Dmaven.javadoc.skip=true release:clean release:prepare release:perform -Dmaven.javadoc.skip=true -DuseReleaseProfile=false -Dmaven.javadoc.failOnError=false -Dusername=alfresco-build -Dpassword=${GITHUB_PASSWORD}

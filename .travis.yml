@@ -35,3 +35,14 @@ jobs:
       # Run Veracode
       install: skip
       script: travis_wait 30 bash _ci/source_clear.sh
+      
+    - stage: release
+      name: "Push to Nexus"
+      if: type != pull_request AND commit_message ~ /\[release\]/
+      script:
+        # Use full history for release
+        - git checkout -B "${TRAVIS_BRANCH}"
+        # Add email to link commits to user
+        - git config user.email "${GIT_EMAIL}"
+        # Skip building of release commits
+        - mvn --batch-mode -q -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DskipTests -Darguments=-DskipTests release:clean release:prepare release:perform

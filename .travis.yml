@@ -21,5 +21,17 @@ install: travis_retry mvn install -DskipTests=true -B -V
 
 stages:
   - build
-  - test
   - release
+  
+jobs:
+  include:
+    - name: "Build"
+      stage: build
+
+    - name: "Source Clear Scan (SCA)"
+      stage: build
+      # only on SP branches or master and if it is not a PR
+      if: type != pull_request
+      # Run Veracode
+      install: skip
+      script: travis_wait 30 bash _ci/source_clear.sh

@@ -1,0 +1,48 @@
+dist: xenial
+sudo: required
+language: java
+jdk:
+  - openjdk11
+
+cache:
+  directories:
+    - $HOME/.m2
+
+branches:
+  only:
+    - develop
+    - master
+    - dev-travis-migration
+    
+before_install:
+  - "cp _ci/.travis.settings.xml $HOME/.m2/settings.xml"
+
+install: travis_retry mvn install -DskipTests=true -B -V
+
+stages:
+  - build
+  - release
+  
+jobs:
+  include:
+    - name: "Build"
+      stage: build
+
+    - name: "Source Clear Scan (SCA)"
+      stage: build
+      # only on SP branches or master and if it is not a PR
+      if: type != pull_request
+      # Run Veracode
+      install: skip
+      script: travis_wait 30 bash _ci/source_clear.sh
+      
+    - stage: release
+      name: "Push to Nexus"
+      if: type != pull_request AND commit_message ~ /\[release\]/
+      script:
+        # Use full history for release
+        - git checkout -B "${TRAVIS_BRANCH}"
+        # Add email to link commits to user
+        - git config user.email "${GIT_EMAIL}"
+        # Skip building of release commits
+        - mvn --batch-mode -q -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DskipTests -Darguments=-DskipTests release:clean release:prepare release:perform

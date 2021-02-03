@@ -20,7 +20,7 @@
         <spring-social.version>1.1.6.RELEASE</spring-social.version>
         <jackson.version>2.9.5</jackson.version>
         <joor.version>0.9.4</joor.version>
-        <junit.version>4.10</junit.version>
+        <junit.version>4.13.1</junit.version>
         <mockito.version>1.9.0</mockito.version>
         <commons-lang3.version>3.1</commons-lang3.version>
     </properties>

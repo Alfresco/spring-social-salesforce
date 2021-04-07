@@ -57,4 +57,8 @@ public interface Salesforce extends ApiBinding {
 
     public void setAuthGatewayBaseUrl(String gatewayUrl);
 
+    public CommunityOperations communityOperations();
+
+    public CommunityOperations communityOperations(String instanceUrl);
+
 }

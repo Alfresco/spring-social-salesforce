@@ -13,15 +13,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
 import org.springframework.social.oauth2.OAuth2Version;
-import org.springframework.social.salesforce.api.ApiOperations;
-import org.springframework.social.salesforce.api.ChatterOperations;
-import org.springframework.social.salesforce.api.QueryOperations;
-import org.springframework.social.salesforce.api.RecentOperations;
-import org.springframework.social.salesforce.api.SObjectOperations;
-import org.springframework.social.salesforce.api.Salesforce;
-import org.springframework.social.salesforce.api.SearchOperations;
-import org.springframework.social.salesforce.api.SalesforceUserDetails;
-import org.springframework.social.salesforce.api.UserOperations;
+import org.springframework.social.salesforce.api.*;
 import org.springframework.social.salesforce.api.impl.json.SalesforceModule;
 import org.springframework.web.client.RestTemplate;
 
@@ -62,6 +54,7 @@ public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Sale
 
     private UserOperations userOperations;
 
+    private CommunityOperations communityOperations;
 
     public SalesforceTemplate()
     {
@@ -186,6 +179,14 @@ public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Sale
         return userOperations;
     }
 
+    @Override
+    public CommunityOperations communityOperations() { return communityOperations; }
+
+    @Override
+    public CommunityOperations communityOperations(String instanceUrl) {
+        this.instanceUrl = instanceUrl;
+        return communityOperations;
+    }
 
     private void initialize()
     {
@@ -196,6 +197,7 @@ public class SalesforceTemplate extends AbstractOAuth2ApiBinding implements Sale
         searchOperations = new SearchTemplate(this, getRestTemplate());
         sObjectsOperations = new SObjectsTemplate(this, getRestTemplate());
         userOperations = new UserOperationsTemplate(this, getRestTemplate());
+        communityOperations = new CommunityTemplate(this, getRestTemplate());
     }
 
 

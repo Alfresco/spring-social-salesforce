@@ -8,10 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Ignore;
-import org.springframework.social.salesforce.api.ApiVersion;
-import org.springframework.social.salesforce.api.QueryResult;
-import org.springframework.social.salesforce.api.ResultItem;
-import org.springframework.social.salesforce.api.Salesforce;
+import org.springframework.social.salesforce.api.*;
 import org.springframework.social.salesforce.client.BaseSalesforceFactory;
 
 /**
@@ -78,6 +75,11 @@ public class ApiTest {
         System.out.println("\n\n");
 
         testLeadCreateUpdate(template);
+
+        System.out.println("\n\n");
+
+        testCommunitiesOperations(template);
+
     }
 
     private static String resolveAuthURL(String numberSelection) {
@@ -130,6 +132,18 @@ public class ApiTest {
                     System.out.println("WARNING: Possibly " + sobjectName + " does not allow queries without filter.");
                 }
             }
+        }
+    }
+
+    public static void testCommunitiesOperations(Salesforce template) {
+        System.out.println("Community API");
+        System.out.println("Current communities: ");
+
+        for (Community community: template.communityOperations().getCommunities()) {
+
+            System.out.println("Community id: " + community.getId());
+
+            System.out.println("Community name: " + community.getName());
         }
     }
 
